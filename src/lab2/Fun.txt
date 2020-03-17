@@ -1,0 +1,12 @@
+//Zad. 1.
+Map = fun(Fun, List) -> [Fun(X) || X <- List] end.
+Filter = fun(Fun, List) -> [X || X <- List, Fun(X)] end.
+
+Map(fun(X) -> X * 3 end, [1, 2, 3, 4]).
+Filter(fun(X) -> X rem 2 == 0 end, [1, 2, 3, 4, 5, 6, 7]).
+
+//Zad. 2.
+DigitsSum = fun(Integer) -> lists:foldl(fun(X, Y) -> X + Y end, 0, [X - 48 || X <- integer_to_list(Integer)]) end.
+
+//Zad. 3.
+lists:filter(fun(X) -> DigitsSum(X) rem 3 == 0 end, [trunc(rand:uniform(1000000)) || X <- lists:seq(1, 1000000)]).
