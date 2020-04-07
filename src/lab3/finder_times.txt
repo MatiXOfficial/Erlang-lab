@@ -1,0 +1,10 @@
+Za pomocą funkcji timer:tc/3 zmierzono czasy działania dla 20000 ludzi i 2000 paczkomatów.
+
+Wersja sekwencyjna:         6.797000s
+Wersja bardzo równoległa:   2.485000s
+Wersja mniej równoległa     1.297000s (8 rdzeni)
+
+Ze względu na współbieżność, wersja bardzo równoległa jest szybsza od sekwencyjnej.
+Jednakże, wykorzystuje ona olbrzymią liczbę procesów, co wiąże się z narzutem
+czasowym. Dzięki temu wersja mniej równoległa jest najszybsza. Zwiększanie liczby
+procesów powyżej tej liczby (16, 100, ...) nie zmniejsza już czasu wykonania (powoli go zwiększa).
