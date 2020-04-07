@@ -1,0 +1,39 @@
+M = pollution:createMonitor().  % Utworzenie monitora
+
+M1 = pollution:addStation("stacja 1", {5, 10}, M).  % Dodanie nowej stacji
+% M2 = pollution:addStation("stacja 1", {10, 15}, M1).  % Stacja nie doda się: {error,name_already_in_the_monitor}
+% M2 = pollution:addStation("stacja 2", {5, 10}, M1).   % Stacja nie doda się: {error,coords_already_in_the_monitor}
+% M2 = pollution:addStation("stacja 1", {5, 10}, M1).   % Stacja nie doda się: {error,station_already_in_the_monitor}
+M2 = pollution:addStation("stacja 2", {2, 3}, M1).  % Stacja dodana poprawnie
+
+% M3 = pollution:addValue("stacja 10", {{2020,4,7},{17,7,36}}, "T1", 10, M2).    % Pomiar nie doda się: {error,no_such_a_station_in_the_monitor}
+M3 = pollution:addValue("stacja 2", {{2020,4,7},{17,7,36}}, "T1", 10, M2).   % Pomiar dodany poprawnie
+M4 = pollution:addValue("stacja 2", {{2020, 4, 7}, {16, 0, 0}}, "T2", 30, M3).  % Pomiar dodany poprawnie
+% M5 = pollution:addValue("stacja 2", {{2020, 4, 7}, {16, 0, 0}}, "T2", 60, M4).  % Pomiar nie doda się: {error,{value_already_in_the_monitor,30}}
+M5 = pollution:addValue("stacja 2", {{2020,4,7},{17,8,6}}, "T2", 60, M4).   % Pomiar dodany poprawnie
+M6 = pollution:addValue({5, 10}, {{2020, 4, 7}, {17, 0, 15}}, "T1", 5, M5). % Pomiar dodany poprawnie
+M7 = pollution:addValue({5, 10}, {{2020, 1, 1}, {17, 0, 15}}, "T2", 10, M6).    % Pomiar dodany poprawnie
+
+M8 = pollution:removeValue({5, 10}, {{2020, 1, 1}, {17, 0, 15}}, "T2", M7). % Pomiar usunięty poprawnie
+
+% Zawartość monitora M8 wygląda następująco:
+% #{{station,"stacja 1",{5,10}} =>
+%       [{reading,{{2020,4,7},{17,0,15}},"T1",5}],
+%   {station,"stacja 2",{2,3}} =>
+%       [{reading,{{2020,4,7},{17,8,6}},"T2",60},
+%        {reading,{{2020,4,7},{16,0,0}},"T2",30},
+%        {reading,{{2020,4,7},{17,7,36}},"T1",10}]}
+
+pollution:getOneValue("stacja 2", {{2020,4,7},{17,7,36}}, "T1", M8).    % Zwraca 10, czyli wartość danego pomiaru
+
+pollution:getStationMean({2, 3}, "T2", M8). % Zwraca 45.0 = (30 + 60) / 2
+
+pollution:getDayMean("T1", {2020, 4, 7}, M8).   % Zwraca 7.5 = (5 + 10) / 2
+
+%%%%%%%%%%%%%% Dodatkowe funkcje %%%%%%%%%%%%%%%%%%%%%%
+
+pollution:getTypeCount(M8). % Zwraca #{"T1" => 2,"T2" => 2} => wykonano 2 pomiary T1 i dwa T2, co jest zgodne z prawdą
+pollution:getTypeCount(M7). % Zwraca #{"T1" => 2,"T2" => 3} => wykonano 2 pomiary T1 i trzy T2, co jest zgodne z prawdą
+
+pollution:getDaySummary({2020, 4, 7}, M7).  % Zwraca [{"T1",7.5},{"T2",45.0}] => średnia T1 = 7.5, średnia T2 = 45.0
+                                            % Nie został uwzględniony pomiar z dnia {2020, 1, 1}
