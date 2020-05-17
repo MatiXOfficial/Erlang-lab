@@ -28,13 +28,13 @@ defmodule PollutionDataStream do
     importLinesFromCSV(fileName) |>
       Stream.map(fn(x) -> convertOneLine(x) end) |>
       identifyStations |>
-      Enum.each(fn({x, y}) -> :pollution_gen_server.addStation("station_#{x}_#{y}", {x, y}) end) # Ani Stream.each, ani Stream.flat_map nie zadziałały poprawnie
+      Enum.each(fn({x, y}) -> :pollution_gen_server.addStation("station_#{x}_#{y}", {x, y}) end)
   end
 
   def loadValues(fileName) do
     importLinesFromCSV(fileName) |>
       Stream.map(fn(x) -> convertOneLine(x) end) |>
-      Enum.each(fn(x) -> :pollution_gen_server.addValue(x.location, x.datetime, "PM10", x.pollutionLevel) end) # Ani Stream.each, ani Stream.flat_map nie zadziałały poprawnie
+      Enum.each(fn(x) -> :pollution_gen_server.addValue(x.location, x.datetime, "PM10", x.pollutionLevel) end)
   end
 
   def getStationMean(coords, what) do
